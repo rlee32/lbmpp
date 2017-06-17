@@ -24,6 +24,7 @@ SRCS +=	grid/BoundaryConditions.cc
 
 OBJS = $(SRCS:.cc=.o)
 
+# Finally, creating the main application.
 lbmpp: $(OBJS)
 	$(CXX) $(CXX_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $^ -o lbmpp $(LD_FLAGS)
 
