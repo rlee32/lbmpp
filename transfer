@@ -1,0 +1,4 @@
+mv u_*.dat results/fields/
+mv v_*.dat results/fields/
+mv centerline*.tsv results/centerlines/
+mv *.png results/pics/
