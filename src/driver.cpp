@@ -8,7 +8,7 @@
 #include <iostream>
 
 #include "sim/Simulator.h"
-#include "Timer.h"
+#include "Stopwatch.h"
 
 using namespace std;
 
@@ -17,20 +17,19 @@ int main(int argc, char ** argv)
   // First read inputs and instantiate control panel.
   Simulator sim("settings");
 
-  // timer
-  Timer timer;
+  Stopwatch stopwatch;
 
   // Solution loop.
   cout << "Running " << sim.get_timesteps() << " timesteps." << endl;
   // bool done = false;
   int k = 0;
-  timer.start();
+  stopwatch.start();
   while ( k <= sim.get_timesteps() )
   {
     sim.iteration();
     if ( k % sim.get_display_interval() == 0 )
     {
-      cout << "Average speed: " << k / timer.stop()
+      cout << "Average speed: " << static_cast<double>(k) / stopwatch.stopSeconds()
         << " iterations / second" << endl;
       if ( sim.do_picset() )
       {
@@ -39,7 +38,7 @@ int main(int argc, char ** argv)
     }
     ++k;
   }
-  
+
   if ( k >= sim.get_timesteps() ) sim.output_solution();
 
   cout << "Simulation finished!" << endl;
