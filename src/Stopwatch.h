@@ -1,13 +1,10 @@
 #pragma once
 
 // A C++ stopwatch
-// Call start() to start counting, then stop() to get the elapsed time.
-// If desired, the accuracy can be changed in the stop() method.
+// Call start() to start counting, then stop*() to get the elapsed time.
 //
-// Usage:
-// 1: Instantiate.
-// 2: Start counting.
-// 3: Get the time elapsed.
+// TODO: put this is unit tests.
+// Usage example:
 //
 // Stopwatch stopwatch;
 // stopwatch.start();
