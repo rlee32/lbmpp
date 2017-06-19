@@ -1,9 +1,9 @@
 CXX = c++
 CXX_FLAGS = -std=c++14 -fopenmp
-OPT_FLAGS = -O3 
+OPT_FLAGS = -O3
 # OPT_FLAGS += -fopenmp -ffast-math
 DEBUG_FLAGS = -g -Wall -pedantic -Wno-strict-overflow
-LD_FLAGS = 
+LD_FLAGS =
 
 ifeq ($(NOVIZ),1)
 SRCS = src/driver.cpp
