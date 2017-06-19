@@ -10,38 +10,28 @@
 #include "sim/Simulator.h"
 #include "Stopwatch.h"
 
-using namespace std;
-
 int main(int argc, char ** argv)
 {
-  // First read inputs and instantiate control panel.
-  Simulator sim("settings");
-
-  Stopwatch stopwatch;
-
-  // Solution loop.
-  cout << "Running " << sim.get_timesteps() << " timesteps." << endl;
-  // bool done = false;
-  int k = 0;
-  stopwatch.start();
-  while ( k <= sim.get_timesteps() )
-  {
-    sim.iteration();
-    if ( k % sim.get_display_interval() == 0 )
+    Simulator sim("settings");
+    Stopwatch stopwatch;
+    std::cout << "Running " << sim.get_timesteps() << " timesteps." << std::endl;
+    int timestep = 0;
+    stopwatch.start();
+    while (timestep <= sim.get_timesteps())
     {
-      cout << "Average speed: " << static_cast<double>(k) / stopwatch.stopSeconds()
-        << " iterations / second" << endl;
-      if ( sim.do_picset() )
-      {
-        sim.output_picset_field(k/sim.get_display_interval());
-      }
+        sim.iteration();
+        if (timestep % sim.get_display_interval() == 0)
+        {
+            const double speed = static_cast<double>(timestep) / stopwatch.stopSeconds();
+            std::cout << "Average speed: " << speed << " iterations / second" << std::endl;
+            if (sim.do_picset())
+            {
+                sim.output_picset_field(timestep / sim.get_display_interval());
+            }
+        }
+        ++timestep;
     }
-    ++k;
-  }
-
-  if ( k >= sim.get_timesteps() ) sim.output_solution();
-
-  cout << "Simulation finished!" << endl;
-
-  return EXIT_SUCCESS;
+    std::cout << "Simulation finished!" << std::endl;
+    sim.output_solution();
+    return EXIT_SUCCESS;
 }
