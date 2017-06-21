@@ -10,7 +10,7 @@
 #include "sim/Simulator.h"
 #include "Stopwatch.h"
 
-int main(int argc, char ** argv)
+int main(int /*argc*/, char** /*argv*/)
 {
     Simulator sim("settings");
     Stopwatch stopwatch;

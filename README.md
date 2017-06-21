@@ -1,17 +1,25 @@
-A C++ LBM code.  
+A C++ LBM code.
 
-Focus is on incompressible, isothermal high-Re flows. 
+Focus is on incompressible, isothermal high-Re flows.
 The ultimate goal is solution-adaptive rotor-stator simulations.
+
+## Compilation
+
+Run 'make' to compile with visualizer.
+
+Run 'make NOVIZ=1' to compile without visualizer (it will be slightly faster).
+
+Run 'make TEST=1' to compile and run unit tests.
+For this, you will need to have the googletest repo on your machine
+and will need to define its path in the Makefile.
 
 ## Usage
 
-Run 'make' to compile with visualizer. 
-Run 'make NOVIZ=1' to compile without visualizer (it will be slightly faster). 
+Modify 'settings' to your needs.
 
-Modify 'settings' to your needs.  
+To run: './lbmpp'.
 
-To run: './lbmpp'.  
-For custom maximum window size, run: './lbmpp \<maximum resolution dimension\>'.  
+For custom maximum window size, run: './lbmpp \<maximum resolution dimension\>'.
 
 ## Parameters
 
