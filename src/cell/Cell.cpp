@@ -676,7 +676,7 @@ inline void Cell::compute_vc_body_force( double nuc )
   vc.g[6] = 1.0 / 3.0 * ( Fx*(-u) + Fy*(-1+2*v) );
   vc.g[7] = 1.0 / 12.0 * ( Fx*(1+2*u-3*v) + Fy*(-1-3*u+2*v) );
 }
-inline void Cell::apply_steady_vc_body_force( double omega, double dt, 
+inline void Cell::apply_steady_vc_body_force( double omega, double dt,
   double dh_inv, double nuc )
 {
   fill_strain_terms( omega );
@@ -686,8 +686,8 @@ inline void Cell::apply_steady_vc_body_force( double omega, double dt,
   for(size_t i = 0; i < 8; ++i) state.f[i] += dt*vc.g[i];
 }
 
-void Cell::apply_advected_vc_body_force( double omega, double dt, 
-  double dh_inv, double nuc )
+void Cell::apply_advected_vc_body_force( double /*omega*/, double dt,
+  double /*dh_inv*/, double /*nuc*/)
 {
   state.fc += dt*vc.gc;
   for(size_t i = 0; i < 8; ++i) state.f[i] += 0.5*dt*(vc.g[i] + vc.b[i]);
@@ -696,14 +696,14 @@ void Cell::apply_advected_vc_body_force( double omega, double dt,
 // Single-relaxation time advance of fc.
 inline double Cell::next_fc_srt( double msq, double omega ) const
 {
-  return ( omega * FEQ( 4.0/9.0, state.rho, 0, msq ) 
+  return ( omega * FEQ( 4.0/9.0, state.rho, 0, msq )
     + ( 1 - omega ) * state.fc );
 }
 // Single-relaxation time advance of f[i].
 inline double Cell::next_fi_srt( size_t i, double msq, double omega ) const
 {
-  return ( omega 
-    * FEQ(WEIGHT(i), state.rho, CX[i]*state.u + CY[i]*state.v, msq) 
+  return ( omega
+    * FEQ(WEIGHT(i), state.rho, CX[i]*state.u + CY[i]*state.v, msq)
     + ( 1 - omega ) * state.f[i] );
 }
 
