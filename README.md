@@ -13,6 +13,9 @@ Run 'make TEST=1' to compile and run unit tests.
 For this, you will need to have the googletest repo on your machine
 and will need to define its path in the Makefile.
 
+If you want to compile using multiple cores, add '-jN',
+where 'N' is the number of threads to use.
+
 ## Usage
 
 Modify 'settings' to your needs.
@@ -23,27 +26,27 @@ For custom maximum window size, run: './lbmpp \<maximum resolution dimension\>'.
 
 ## Parameters
 
-The following are the main parameters:  
+The following are the main parameters:
 
-1. Mach number: this is the ratio of the boundary condition velocity to the 
-  lattice speed of sound, which is 1 / sqrt(3) for grid and time steps of 1. 
-  The Mach number should not be set too high for compressibility to affect the 
-  results, but increasing Mach number allows for less timesteps to convergence.  
-2. Characteristic length: This is not necessarily related to the 
-  grid (though in the lid-driven cavity case it is). It is determined by the 
-  physics of your problem.   
-3. Reynolds number: This is determined by the physics of your problem.  
+1. Mach number: this is the ratio of the boundary condition velocity to the
+  lattice speed of sound, which is 1 / sqrt(3) for grid and time steps of 1.
+  The Mach number should not be set too high for compressibility to affect the
+  results, but increasing Mach number allows for less timesteps to convergence.
+2. Characteristic length: This is not necessarily related to the
+  grid (though in the lid-driven cavity case it is). It is determined by the
+  physics of your problem.
+3. Reynolds number: This is determined by the physics of your problem.
 
-The complete list of parameters can be found in 'settings'.  
+The complete list of parameters can be found in 'settings'.
 
 ## Assumptions, Implementation Details, and Validation
 
-See 'ref/report.pdf'.  
+See 'ref/report.pdf'.
 
 ## Development Notes / TODO
 
-1. Characterize spatial order of accuracy of grid interfaces.  
-2. Solution-adaptive refinement.  
+1. Characterize spatial order of accuracy of grid interfaces.
+2. Solution-adaptive refinement.
 
 <!--
 ## Assumptions
