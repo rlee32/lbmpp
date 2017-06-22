@@ -80,7 +80,6 @@ private:
   std::size_t display_interval;
   bool picset;
   std::string output_suffix;
-  static const size_t output_precision = 16;
 
   bool experimental;
 
