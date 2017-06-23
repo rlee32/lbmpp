@@ -1,2 +1,5 @@
+*.a
 *.o
 lbmpp
+lbmpp_tests
+output/*

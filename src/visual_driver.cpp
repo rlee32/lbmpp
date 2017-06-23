@@ -34,10 +34,13 @@ int main(int argc, char ** argv)
         }
         ++timestep;
     }
-
-    std::cout << "Simulation finished! Press enter to continue." << std::endl;
-    sim.output_solution();
-    sv.save_image( "mag_"+sim.get_output_suffix()+".png" );
-    std::cin.ignore(); // Let the final view linger.
+    const bool complete = timestep == sim.get_timesteps();
+    if (complete)
+    {
+        std::cout << "Simulation finished! Press enter to continue." << std::endl;
+        sim.output_solution();
+        sv.save_image(sim.outputFolder + "mag_"+sim.get_output_suffix()+".png" );
+        std::cin.ignore(); // Let the final view linger.
+    }
     return EXIT_SUCCESS;
 }

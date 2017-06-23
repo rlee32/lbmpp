@@ -15,11 +15,11 @@ struct Config
     Config(const std::string& filename);
 
     // Run time control.
-    std::size_t timesteps;
+    int timesteps{0};
     // Solver parameters.
     bool refinement; // If true, enables solution-adaptive refinement.
-    std::size_t relax_model;
-    std::size_t vc_model;
+    int relax_model;
+    int vc_model;
     // Physical parameters.
     double Re; // Reynolds number.
     double M; // Mach number for characteristic velocity.
@@ -44,10 +44,10 @@ struct Config
     char bc[4]; // bottom, right, top, left
     std::string face_order[4];
     char face_order_char[4];
-    // coarse grid dimension
-    std::size_t cell_count[2];
+    // (coarsest-cell) grid dimensions
+    int cell_count[2];
     // output control
-    std::size_t display_interval;
+    int display_interval;
     bool picset;
     std::string output_suffix;
     bool experimental;
@@ -55,10 +55,10 @@ struct Config
 private:
     void readSettings(const std::string& filename);
     void read_coarse_solution();
-    std::size_t read_coarse_field(std::string filename, std::vector<double>& phi, double scale);
+    int read_coarse_field(std::string filename, std::vector<double>& phi, double scale);
     // coarse input solution.
-    void interpolate_field(std::size_t source_x_cells, std::vector<double>& source,
-        std::size_t target_x_cells, std::size_t target_y_cells,
+    void interpolate_field(int source_x_cells, std::vector<double>& source,
+        int target_x_cells, int target_y_cells,
         std::vector<double>& target);
 };
 

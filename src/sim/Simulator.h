@@ -43,6 +43,8 @@ public:
   bool do_picset() { return picset; }
   void output_picset_field(std::size_t k);
   std::string get_output_suffix() { return output_suffix; }
+
+    const std::string outputFolder{"output/"};
 private:
   // Run time control.
   bool refinement; // If true, enables solution-adaptive refinement.
@@ -112,6 +114,5 @@ private:
     std::vector<CellData>& top_values, std::vector<CellData>& bottom_values );
   void output_centerlines();
   // Initialization
-
 };
  

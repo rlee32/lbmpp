@@ -116,8 +116,8 @@ void Simulator::output_coarse_field()
   ofstream u, v;
   const vector<Cell>& g = grid.get_cells(0);
 
-  u.open("u_"+output_suffix+".dat");
-  v.open("v_"+output_suffix+".dat");
+  u.open(outputFolder + "u_"+output_suffix+".dat");
+  v.open(outputFolder + "v_"+output_suffix+".dat");
   u.precision(std::numeric_limits< double >::digits10);
   v.precision(std::numeric_limits< double >::digits10);
   for (size_t j = 0; j < cell_count[1]; ++j)
@@ -139,8 +139,8 @@ void Simulator::output_picset_field(size_t k)
 {
   ofstream u, v;
   const vector<Cell>& g = grid.get_cells(0);
-  u.open("picset/u_"+output_suffix+"_"+to_string((long long)k)+".dat");
-  v.open("picset/v_"+output_suffix+"_"+to_string((long long)k)+".dat");
+  u.open(outputFolder + "picset/u_"+output_suffix+"_"+to_string((long long)k)+".dat");
+  v.open(outputFolder + "picset/v_"+output_suffix+"_"+to_string((long long)k)+".dat");
   u.precision(std::numeric_limits< double >::digits10);
   v.precision(std::numeric_limits< double >::digits10);
   for (size_t j = 0; j < cell_count[1]; ++j)
@@ -635,7 +635,7 @@ void Simulator::print_centerlines(
   vector<CellData>& centerx, vector<CellData>& centery )
 {
   ofstream out;
-  out.open("centerlines_"+output_suffix+".tsv");
+  out.open(outputFolder + "centerlines_"+output_suffix+".tsv");
   out.precision(std::numeric_limits< double >::digits10);
   vector<CellData>::iterator it = centery.begin();
   for ( ; it != centery.end(); ++it ) out << it->x << "\t";

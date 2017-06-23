@@ -55,6 +55,7 @@ SRCS +=	src/config/Config.cpp
 ifeq ($(TEST),1)
 GTEST_SRCS += src/main.t.cpp
 GTEST_SRCS += src/Stopwatch.t.cpp
+GTEST_SRCS += src/config/Config.t.cpp
 endif
 
 %.o: %.cpp
@@ -88,6 +89,7 @@ CLEANFILES += $(OBJS_MAIN) $(OBJS)
 CLEANFILES += src/*.o
 CLEANFILES += *.a
 CLEANFILES += *.o
+CLEANFILES += output/*
 # Cluster output files.
 CLEANFILES += *.o[0-9][0-9]*
 CLEANFILES += *.e[0-9][0-9]*

@@ -2,6 +2,7 @@
 
 Config::Config(const std::string& filename)
 {
+    std::cout << "Reading config file: " << filename << std::endl;
     bc[0] = 'w';
     bc[1] = 'w';
     bc[2] = 'w';
@@ -55,7 +56,7 @@ void Config::readSettings(const std::string& filename)
                 {
                     continue;
                 }
-                else if(parameter == "coarse_cells")
+                else if(parameter == "cell_count")
                 {
                     stringStream >> cell_count[0];
                     stringStream >> cell_count[1];
@@ -150,9 +151,23 @@ void Config::readSettings(const std::string& filename)
         {
             if (not u0file.empty() and not v0file.empty())
             {
+                std::cout << "Reading initial field from files: "
+                    "\n\tu-velocity: " << u0file
+                    << "\n\tv-velocity: " << v0file
+                    << std::endl;
                 read_coarse_solution();
             }
+            else
+            {
+                std::cout << "Attempted to read initial field from files"
+                    ", but one or more filenames were missing." << std::endl;
+            }
         }
+        std::cout << "Successfully read config file." << std::endl;
+    }
+    else
+    {
+        std::cerr << "Unable to open config file: " << filename << std::endl;
     }
 }
 
@@ -161,10 +176,10 @@ void Config::readSettings(const std::string& filename)
 // filename: name of file where each line is a row of cells.
 //  Example: 256, 128 is represented by 256 columns, 128 lines.
 // Returns x_cells.
-std::size_t Config::read_coarse_field(std::string filename, std::vector<double>& phi,
+int Config::read_coarse_field(std::string filename, std::vector<double>& phi,
   double scale)
 {
-    size_t x_cells = 0;
+    int x_cells = 0;
     std::ifstream myfile (filename);
     if (myfile.is_open())
     {
@@ -198,13 +213,13 @@ std::size_t Config::read_coarse_field(std::string filename, std::vector<double>&
       }
       else
       {
-        std::cout << "Unable to open " << filename << std::endl;
+        std::cerr << "Unable to open file: " << filename << std::endl;
       }
       return x_cells;
 }
 
-void Config::interpolate_field(std::size_t source_x_cells, std::vector<double>& source,
-  std::size_t target_x_cells, std::size_t target_y_cells, std::vector<double>& target)
+void Config::interpolate_field(int source_x_cells, std::vector<double>& source,
+  int target_x_cells, int target_y_cells, std::vector<double>& target)
 {
   // Assume cell-centered fields.
   // Assume uniformly-sized square cells.
@@ -213,12 +228,12 @@ void Config::interpolate_field(std::size_t source_x_cells, std::vector<double>& 
 
   // Converting target indices to source indices for interpolation.
   double x_convert = ((double)source_x_cells) / ((double)target_x_cells);
-  size_t source_y_cells = source.size() / source_x_cells;
+  int source_y_cells = source.size() / source_x_cells;
   double y_convert = ((double)source_y_cells) / ((double)target_y_cells);
-  for( size_t j = 0; j < target_y_cells; ++j )
+  for( int j = 0; j < target_y_cells; ++j )
   {
     double y = ( 0.5 + j ) * y_convert;
-    size_t jj = ceil( y - 0.5 );
+    int jj = ceil( y - 0.5 );
     double dy = y - floor(y);
     if ( jj >= source_y_cells ) 
     {
@@ -230,10 +245,10 @@ void Config::interpolate_field(std::size_t source_x_cells, std::vector<double>& 
       jj = 1;
       dy = 0;
     }
-    for( size_t i = 0; i < target_x_cells; ++i )
+    for( int i = 0; i < target_x_cells; ++i )
     {
       double x = ( 0.5 + i ) * x_convert;
-      size_t ii = ceil( x - 0.5 );
+      int ii = ceil( x - 0.5 );
       double dx = x - floor(x);
       if (ii >= source_x_cells)
       {
@@ -246,7 +261,7 @@ void Config::interpolate_field(std::size_t source_x_cells, std::vector<double>& 
         dx = 0;
       }
       // serial index for upper-right-most point
-      size_t si = ii + jj*source_x_cells;
+      int si = ii + jj*source_x_cells;
       double f11 = source[si - 1 - source_x_cells];
       double f12 = source[si - 1];
       double f21 = source[si - source_x_cells];
@@ -266,17 +281,17 @@ void Config::read_coarse_solution()
 {
     std::vector<double> u_source;
     std::vector<double> v_source;
-    std::vector<size_t> x_cells_candidates;
-    std::vector<size_t> total_cells_candidates;
+    std::vector<int> x_cells_candidates;
+    std::vector<int> total_cells_candidates;
     x_cells_candidates.push_back(read_coarse_field(u0file, u_source, M / M0));
     x_cells_candidates.push_back(read_coarse_field(v0file, v_source, M / M0));
-    size_t x_cells = *( max_element(
+    int x_cells = *( max_element(
     x_cells_candidates.begin(), x_cells_candidates.end()) );
     total_cells_candidates.push_back( u_source.size() );
     total_cells_candidates.push_back( v_source.size() );
-    size_t total_cells = *( max_element(
+    int total_cells = *( max_element(
     total_cells_candidates.begin(), total_cells_candidates.end()) );
-    size_t y_cells = total_cells / x_cells;
+    int y_cells = total_cells / x_cells;
     if ( y_cells*x_cells != total_cells )
     {
     std::cout << "Error! Cell dimensions not consistent with total cells: "
