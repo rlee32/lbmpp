@@ -57,7 +57,7 @@ void Simulator::read_settings(string filename)
       {
         if (parameter[0] == '#') continue;
         // Assign the proper parameter entry.
-        if ( not parameter.compare("coarse_cells") ) 
+        if (not parameter.compare("cell_count"))
         {
           iss >> cell_count[0];
           iss >> cell_count[1];
@@ -521,8 +521,8 @@ void Simulator::centerline_x(
 
 // From side1 and side2 vector data, produces centerline data
 // we assume 0.5 is the centerline for x or y
-void Simulator::produce_centerline_y(vector<CellData>& side1, 
-  vector<CellData>& side2, vector<CellData>& center)
+void Simulator::produce_centerline_y(vector<CellData>& side1,
+        vector<CellData>& side2, vector<CellData>& center)
 {
   CellData cd;
   cd.u = 0;
@@ -631,7 +631,7 @@ void Simulator::produce_centerline_x(vector<CellData>& side1,
 // v values of y-centerline
 // y positions of x-centerline
 // u values of x-centerline
-void Simulator::print_centerlines( 
+void Simulator::print_centerlines(
   vector<CellData>& centerx, vector<CellData>& centery )
 {
   ofstream out;

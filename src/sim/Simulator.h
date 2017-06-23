@@ -12,6 +12,7 @@
 
 #include "../grid/Grid.h"
 #include "../grid/GridLevel.h"
+#include "../config/Config.h"
 
 // For post-processing purposes.
 typedef struct CellData
@@ -22,7 +23,7 @@ typedef struct CellData
 } CellData;
 
 class Simulator
-{ 
+{
 public:
   Simulator(std::string filename);
   void iteration(); // performs one time step advancement.
@@ -113,6 +114,6 @@ private:
   void centerline_y(
     std::vector<CellData>& top_values, std::vector<CellData>& bottom_values );
   void output_centerlines();
-  // Initialization
+
 };
- 
+

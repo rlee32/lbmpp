@@ -1,7 +1,7 @@
 # Use hashtag for comments.
 
 # Grid definition.
-coarse_cells 129 129 # cells in x, y direction.
+cell_count 129 129 # cells in x, y direction.
 
 # Physical parameters; these are used to compute the viscosity.
 Re 1000 # Reynolds number
@@ -48,6 +48,7 @@ rho0 1
 u0 0
 v0 0
 
+# Flag to initialize field from solution recorded in files.
 load_from_file no # (yes / no)
 # (Comment these out if no initial solution desired).
 #M0 0.1
@@ -56,9 +57,11 @@ load_from_file no # (yes / no)
 
 display_interval 1000
 
-# set this to 1 for saving pictures at display_interval (for a movie).
+# set this to 1 for saving pictures at display_interval
+# (so that you can make a movie).
 picset 0
 
 # This flag activates routines used only for hard-coded experimental features.
 # Allows switching between normal and experimental versions without recompiling.
 experimental 0
+
