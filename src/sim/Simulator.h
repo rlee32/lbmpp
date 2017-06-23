@@ -2,6 +2,7 @@
 
 // Contains settings for the simulation.
 
+#include <array>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -74,9 +75,9 @@ private:
   double nuc;
   double nucf;
   // Boundary conditions
-  char bc[4]; // bottom, right, top, left
+  std::array<char, 4> bc; // bottom, right, top, left
   std::string face_order[4];
-  char face_order_char[4];
+  std::array<char, 4> face_order_char;
   // coarse grid dimension
   std::size_t cell_count[2];
   // output control

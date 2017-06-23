@@ -131,13 +131,13 @@ void GridLevel::reconstruct_macro()
   }
 }
 
-void GridLevel::initialize( double scale_increase, 
-  double nu0, double nuc0, 
-  char sides[4], char bc[4], double U,
+void GridLevel::initialize( double scale_increase,
+  double nu0, double nuc0,
+  std::array<char, 4> sides, std::array<char, 4> bc, double U,
   GridLevel* next_grid_level_,
   GridLevel* parent_grid_level_ )
 {
-  bcs.initialize( sides, bc, U, next_grid_level_->get_bcs(), &cells );
+  bcs.initialize(sides, bc, U, next_grid_level_->get_bcs(), &cells);
   // compute scale factors.
   scale_decrease = 1.0 / scale_increase;
   // scale_decrease = 1.0;
@@ -152,7 +152,7 @@ void GridLevel::initialize( double scale_increase,
   omega = 1 / tau;
   // cout << nu << " " << nuc << " " << tau << " " << omega << endl;
   child_grid = next_grid_level_;
-  parent_grid = parent_grid_level_; 
+  parent_grid = parent_grid_level_;
 }
 
 void GridLevel::create_coarse_grid( size_t cell_count_x, size_t cell_count_y,

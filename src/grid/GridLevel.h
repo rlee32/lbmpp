@@ -3,6 +3,7 @@
 // Holds all cells of same dimension, 
 // regardless of connectivity or spatial proximity.
 
+#include <array>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -17,7 +18,7 @@ public:
   GridLevel();
   // Performs one whole iteration at this grid level.
   void refined_cell_bc() { bcs.refined_cell_bc(); }
-  
+
   // Basic
   void collide( std::size_t relax_model, std::size_t vc_model );
   void stream();
@@ -29,14 +30,15 @@ public:
   void reconstruct_macro();
 
   // Initialization
-  void initialize( double scale_increase, double nu, double nuc, 
-    char sides[4], char bc[4], double U, GridLevel* next, GridLevel* parent );
-  void create_coarse_grid( 
+  void initialize(double scale_increase, double nu, double nuc,
+    std::array<char, 4> sides, std::array<char, 4> bc,
+    double U, GridLevel* next, GridLevel* parent );
+  void create_coarse_grid(
     std::size_t cell_count_x, std::size_t cell_count_y, Cell& default_cell );
 
   // BCs
   BoundaryConditions* get_bcs() { return &bcs; }
-  
+
   // Dynamic grid
   GridLevel* get_next_grid_level() { return child_grid; }
   std::vector<Cell>* get_child_grid() { return &child_grid->get_cells(); }

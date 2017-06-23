@@ -2,10 +2,9 @@
 
 using namespace std;
 
-BoundaryConditions::BoundaryConditions() 
+BoundaryConditions::BoundaryConditions()
 : U(0), next_level_bcs(nullptr), g(nullptr)
 {
-  
 }
 
 // We assume that the first and last cells in Face::cells are the corners!!!
@@ -137,13 +136,13 @@ void BoundaryConditions::cell_bc( int ci, char type, char side ) const
   }
 }
 
-void BoundaryConditions::initialize( char sides[4], char bc[4], double U_, 
-  BoundaryConditions* next_level_bcs_, vector<Cell>* g_ )
+void BoundaryConditions::initialize(std::array<char, 4> sides, std::array<char, 4> bc,
+    double U_, BoundaryConditions* next_level_bcs_, vector<Cell>* g_)
 {
   U = U_;
-  for( size_t i = 0; i < 4; ++i )
+  for(int i = 0; i < 4; ++i)
   {
-    Face face( sides[i], bc[i] );
+    Face face(sides[i], bc[i]);
     faces.push_back( face );
   }
   sort( faces.begin(), faces.end(), Face::compare );

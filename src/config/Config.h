@@ -2,12 +2,13 @@
 
 // Reads and has accessors for simulation settings.
 
+#include <algorithm>
+#include <array>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <algorithm>
 #include <limits>
 
 struct Config
@@ -41,11 +42,11 @@ struct Config
     double nuc;
     double nucf;
     // Boundary conditions
-    char bc[4]; // bottom, right, top, left
+    std::array<char, 4> bc; // bottom, right, top, left
     std::string face_order[4];
-    char face_order_char[4];
+    std::array<char, 4> face_order_char;
     // (coarsest-cell) grid dimensions
-    int cell_count[2];
+    std::array<int, 2> cell_count;
     // output control
     int display_interval;
     bool picset;

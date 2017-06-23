@@ -1,7 +1,8 @@
 #pragma once
 
-#include <vector>
 #include <algorithm>
+#include <array>
+#include <vector>
 
 #include "../cell/Cell.h"
 
@@ -9,7 +10,7 @@ class BoundaryConditions
 {
 public:
   BoundaryConditions();
-  void initialize( char sides[4], char bc[4], double U_, 
+  void initialize(std::array<char, 4> sides, std::array<char, 4> bc, double U_,
     BoundaryConditions* next_level_bcs_, std::vector<Cell>* g_ );
   void add_cell( int c, char side );
   void apply_bc();
@@ -31,12 +32,12 @@ private:
     // 'o': zero-gradient outlet
     char type;
     // This defines the order of applying boundary conditions.
-    // For example, a corner with one side wall, and one side moving wall, 
+    // For example, a corner with one side wall, and one side moving wall,
     //  the moving wall should be applied last and be dominant.
     int rank;
     int type_rank( char type ) const;
     Face(char s, char t) : side(s), type(t) { rank = type_rank(type); }
-    bool static compare(const Face& a, const Face& b) 
+    bool static compare(const Face& a, const Face& b)
       { return a.rank < b.rank; }
   } Face;
   std::vector<Face> faces;
