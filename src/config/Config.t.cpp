@@ -4,6 +4,7 @@
 
 TEST(Config, ctor)
 {
+    // Note that the config file path is relative to where the Makefile is.
     Config config("src/config/testconfig.txt");
     ASSERT_EQ(config.timesteps, 50000);
     ASSERT_EQ(config.cell_count[0], 125);

@@ -202,7 +202,7 @@ int Config::read_coarse_field(std::string filename, std::vector<double>& phi,
         myfile.close();
         if (phi.size() % x_cells != 0)
         {
-          std::cout << "Error! Read " << phi.size() << " total cells, but x cells = " 
+          std::cout << "Error! Read " << phi.size() << " total cells, but x cells = "
             << x_cells << std::endl;
         }
         else
@@ -218,8 +218,8 @@ int Config::read_coarse_field(std::string filename, std::vector<double>& phi,
       return x_cells;
 }
 
-void Config::interpolate_field(int source_x_cells, std::vector<double>& source,
-  int target_x_cells, int target_y_cells, std::vector<double>& target)
+void Config::interpolate_field(int source_x_cell_count, std::vector<double>& source,
+  int target_c_cell_count, int target_y_cell_count, std::vector<double>& target)
 {
   // Assume cell-centered fields.
   // Assume uniformly-sized square cells.
@@ -227,32 +227,32 @@ void Config::interpolate_field(int source_x_cells, std::vector<double>& source,
   //  is applied (as on Wikipedia page for bilinear interpolation).
 
   // Converting target indices to source indices for interpolation.
-  double x_convert = ((double)source_x_cells) / ((double)target_x_cells);
-  int source_y_cells = source.size() / source_x_cells;
-  double y_convert = ((double)source_y_cells) / ((double)target_y_cells);
-  for( int j = 0; j < target_y_cells; ++j )
+  double x_convert = ((double)source_x_cell_count) / ((double)target_c_cell_count);
+  int source_y_cell_count = source.size() / source_x_cell_count;
+  double y_convert = ((double)source_y_cell_count) / ((double)target_y_cell_count);
+  for(int j = 0; j < target_y_cell_count; ++j)
   {
     double y = ( 0.5 + j ) * y_convert;
-    int jj = ceil( y - 0.5 );
+    int jj = ceil(y - 0.5);
     double dy = y - floor(y);
-    if ( jj >= source_y_cells ) 
+    if (jj >= source_y_cell_count)
     {
-      jj = source_y_cells - 1;
+      jj = source_y_cell_count - 1;
       dy = 1.0;
     }
-    if ( jj <= 0 ) 
+    if (jj <= 0)
     {
       jj = 1;
       dy = 0;
     }
-    for( int i = 0; i < target_x_cells; ++i )
+    for(int i = 0; i < target_c_cell_count; ++i)
     {
-      double x = ( 0.5 + i ) * x_convert;
+      double x = (0.5 + i) * x_convert;
       int ii = ceil( x - 0.5 );
       double dx = x - floor(x);
-      if (ii >= source_x_cells)
+      if (ii >= source_x_cell_count)
       {
-        ii = source_x_cells - 1;
+        ii = source_x_cell_count - 1;
         dx = 1.0;
       }
       if (ii <= 0)
@@ -261,10 +261,10 @@ void Config::interpolate_field(int source_x_cells, std::vector<double>& source,
         dx = 0;
       }
       // serial index for upper-right-most point
-      int si = ii + jj*source_x_cells;
-      double f11 = source[si - 1 - source_x_cells];
+      int si = ii + jj*source_x_cell_count;
+      double f11 = source[si - 1 - source_x_cell_count];
       double f12 = source[si - 1];
-      double f21 = source[si - source_x_cells];
+      double f21 = source[si - source_x_cell_count];
       double f22 = source[si];
       target.push_back(
         f11*(1-dx)*(1-dy)
