@@ -29,5 +29,6 @@ TEST(Config, ctor)
     ASSERT_EQ(config.display_interval, 1000);
     ASSERT_EQ(config.picset, 0);
     ASSERT_EQ(config.experimental, 0);
+    std::cout << "Sanity-check the output suffix: " << config.output_suffix << std::endl;
 }
 

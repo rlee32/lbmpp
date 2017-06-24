@@ -15,7 +15,7 @@ int main(int /*argc*/, char** /*argv*/)
     const std::string configFilename("settings");
     const Config config(configFilename);
     Grid grid(config);
-    Simulator sim(configFilename, grid);
+    Simulator sim(config, grid);
     Stopwatch stopwatch;
     std::cout << "Running " << config.timesteps << " timesteps." << std::endl;
     int timestep = 0;

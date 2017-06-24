@@ -51,6 +51,7 @@ SRCS +=	src/grid/Grid.cpp
 SRCS +=	src/grid/GridLevel.cpp
 SRCS +=	src/grid/BoundaryConditions.cpp
 SRCS +=	src/config/Config.cpp
+SRCS +=	src/validation/Centerlines.cpp
 # Test files.
 ifeq ($(TEST),1)
 GTEST_SRCS += src/main.t.cpp

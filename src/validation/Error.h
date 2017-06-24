@@ -3,7 +3,7 @@
 #include <cmath>
 #include <vector>
 
-namespace Validation
+namespace Error
 {
 
 // Returns a negative value for error, otherwise the L2 norm difference

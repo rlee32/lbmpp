@@ -1,68 +1,18 @@
-#include "Simulator.h"
+#include "Centerlines.h"
 
-Simulator::Simulator(const Config& config, Grid& grid) : m_config(config), m_grid(grid)
+Centerlines::Centerlines(const Grid&, const Data& y, const Data& x)
 {
-}
-
-void Simulator::iteration()
-{
-  m_grid.iteration(0);
-}
-
-void Simulator::output_solution()
-{
-  output_coarse_field();
-  output_centerlines();
-}
-
-void Simulator::output_coarse_field()
-{
-    std::ofstream u, v;
-  const std::vector<Cell>& g = m_grid.get_cells(0);
-
-  u.open(outputFolder + "u_" + m_config.output_suffix + ".dat");
-  v.open(outputFolder + "v_" + m_config.output_suffix + ".dat");
-  u.precision(std::numeric_limits< double >::digits10);
-  v.precision(std::numeric_limits< double >::digits10);
-  for (int j = 0; j < m_config.cell_count[1]; ++j)
-  {
-    for (int i = 0; i < m_config.cell_count[0]; ++i)
+    for(const auto p : y)
     {
-      int ii = i + j * m_config.cell_count[0];
-      u << g[ii].state.u << "\t";
-      v << g[ii].state.v << "\t";
+        std::cout << p << std::endl;
     }
-    u << std::endl;
-    v << std::endl;
-  }
-  u.close();
-  v.close();
-}
-
-void Simulator::output_picset_field(int k)
-{
-    std::ofstream u, v;
-  const std::vector<Cell>& g = m_grid.get_cells(0);
-  u.open(outputFolder + "picset/u_" + m_config.output_suffix + "_" + std::to_string((long long)k)+".dat");
-  v.open(outputFolder + "picset/v_" + m_config.output_suffix + "_" + std::to_string((long long)k)+".dat");
-  u.precision(std::numeric_limits<double>::digits10);
-  v.precision(std::numeric_limits<double>::digits10);
-  for (int j = 0; j < m_config.cell_count[1]; ++j)
-  {
-    for (int i = 0; i < m_config.cell_count[0]; ++i)
+    for(const auto p : x)
     {
-      int ii = i + j * m_config.cell_count[0];
-      u << g[ii].state.u << "\t";
-      v << g[ii].state.v << "\t";
+        std::cout << p << std::endl;
     }
-    u << std::endl;
-    v << std::endl;
-  }
-  u.close();
-  v.close();
 }
 
-// the public method
+/*
 void Simulator::output_centerlines()
 {
     std::vector<CellData> top;
@@ -208,6 +158,7 @@ void Simulator::centerline_y(
   top_values.push_back(right_wall);
   bottom_values.push_back(right_wall);
 }
+
 // Usable on our tree dynamic grid.
 // Assumes lid-driven cavity, with top surface as moving lid.
 // Assumes square domain with square cells.
@@ -222,11 +173,11 @@ void Simulator::centerline_x(
   left_values.push_back(bottom_wall);
   right_values.push_back(bottom_wall);
   double dim = 1.0 / m_config.cell_count[1];
-  // odd
-  if ( m_config.cell_count[0] & 1 )
+  // odd number of cells along the x-direction.
+  if (m_config.cell_count[0] & 1)
   {
     int start_i = m_config.cell_count[0] >> 1;
-    for( int j = 0; j < m_config.cell_count[1]; ++j )
+    for(int j = 0; j < m_config.cell_count[1]; ++j)
     {
       int ii = j*m_config.cell_count[0] + start_i;
       Cell& cell = m_grid[0][ii];
@@ -252,7 +203,7 @@ void Simulator::centerline_x(
       }
     }
   }
-  // even
+  // even number of cells along the x-direction.
   else
   {
     int right_i = m_config.cell_count[0] >> 1;
@@ -426,5 +377,5 @@ void Simulator::print_centerlines(std::vector<CellData>& centerx, std::vector<Ce
     out << std::endl;
     out.close();
 }
-
+*/
 
