@@ -42,6 +42,8 @@ The complete list of parameters can be found in 'settings'.
 ## Assumptions, Implementation Details, and Validation
 
 See 'references/report.pdf'.
+Note that the compilation and usage instructions in the report may be outdated
+(use this readme instead).
 
 ## Development Notes / TODO
 
