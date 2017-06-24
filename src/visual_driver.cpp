@@ -21,8 +21,8 @@ int main(int argc, char ** argv)
     SolutionViewer sv(config, sim, max_pixel_dim);
     Stopwatch stopwatch;
     stopwatch.start();
-    int timestep = 0;
-    while (not sv.window.is_closed() and timestep < config.timesteps)
+    int timestep = 1;
+    while (not sv.window.is_closed() and timestep <= config.timesteps)
     {
         sim.iteration();
         if (timestep % config.display_interval == 0)
@@ -38,7 +38,7 @@ int main(int argc, char ** argv)
         ++timestep;
     }
     std::cout << "Completed " << timestep << " timesteps." << std::endl;
-    const bool complete = timestep == config.timesteps;
+    const bool complete = timestep > config.timesteps;
     if (complete)
     {
         std::cout << "Simulation finished! Press enter to continue." << std::endl;

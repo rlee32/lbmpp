@@ -13,6 +13,165 @@ Centerlines::Centerlines(const Grid&, const Data& y, const Data& x)
 }
 
 /*
+void getLeftmostData()
+{
+
+}
+
+// This is used when the centerline cuts through centerCells,
+// as opposed to bordering cells.
+// Gets u value at normalized position y on the vertical centerline.
+// y is in [0, 1]
+double uVerticalCenterline(
+    const std::vector<const Cell*> centerCells,
+    const Grid& m_grid,
+    const double y)
+{
+    std::numeric_limits<double>::epsilon();
+    if (y == 0.0)
+    {
+        // TODO: implement generic boundary value.
+        return 0.0; // assuming wall.
+    }
+    else if (y == 1.0)
+    {
+        // TODO: implement generic boundary value.
+        return m_config.U; // assuming lid.
+    }
+    else
+    {
+
+    }
+    for (const auto cell : centerCells)
+    {
+
+        if (cell->active())
+        {
+            // right on centerline
+            CellData cd;
+            cd.u = cell.u();
+            cd.v = cell.v();
+            cd.x = 0.5;
+            cd.y = (j+0.5)*dim;
+            left_values.push_back(cd);
+            right_values.push_back(cd);
+        }
+        else
+        {
+            // left of centerline
+            get_data( cell(0), left_values, 'r', 0.5-0.5 * dim, j * dim, 0.5 * dim );
+            get_data( cell(1), left_values, 'r', 0.5-0.5 * dim, (j + 0.5) * dim, 0.5 * dim );
+            // right of centerline
+            get_data( cell(2), right_values, 'l', 0.5, j * dim, 0.5 * dim );
+            get_data( cell(3), right_values, 'l', 0.5, (j + 0.5) * dim, 0.5 * dim );
+        }
+    }
+
+    for(int j = 0; j < m_config.cell_count[1]; ++j)
+    {
+        int ii = j*m_config.cell_count[0] + start_i;
+      Cell& cell = m_grid[0][ii];
+      if (cell.active())
+      {
+        // right on centerline
+        CellData cd;
+        cd.u = cell.u();
+        cd.v = cell.v();
+        cd.x = 0.5;
+        cd.y = (j+0.5)*dim;
+        left_values.push_back(cd);
+        right_values.push_back(cd);
+      }
+      else
+      {
+        // left of centerline
+        get_data( cell(0), left_values, 'r', 0.5-0.5*dim, j*dim, 0.5*dim );
+        get_data( cell(1), left_values, 'r', 0.5-0.5*dim, (j+0.5)*dim, 0.5*dim );
+        // right of centerline
+        get_data( cell(2), right_values, 'l', 0.5, j*dim, 0.5*dim );
+        get_data( cell(3), right_values, 'l', 0.5, (j+0.5)*dim, 0.5*dim );
+      }
+    }
+}
+
+// Usable on our tree dynamic grid.
+// Assumes lid-driven cavity, with top surface as moving lid.
+// Assumes square domain with square cells.
+void Simulator::centerline_x(
+  std::vector<CellData>& left_values, std::vector<CellData>& right_values)
+{
+  CellData bottom_wall;
+  bottom_wall.u = 0;
+  bottom_wall.v = 0;
+  bottom_wall.x = 0.5;
+  bottom_wall.y = 0;
+  left_values.push_back(bottom_wall);
+  right_values.push_back(bottom_wall);
+  double dim = 1.0 / m_config.cell_count[1];
+
+  // odd number of cells along the x-direction.
+    const bool oddCellCount = m_config.cell_count[0] & 1;
+  if (oddCellCount)
+  {
+    int start_i = m_config.cell_count[0] >> 1;
+    for(int j = 0; j < m_config.cell_count[1]; ++j)
+    {
+      int ii = j*m_config.cell_count[0] + start_i;
+      Cell& cell = m_grid[0][ii];
+      if ( cell.active() )
+      {
+        // right on centerline
+        CellData cd;
+        cd.u = cell.u();
+        cd.v = cell.v();
+        cd.x = 0.5;
+        cd.y = (j+0.5)*dim;
+        left_values.push_back(cd);
+        right_values.push_back(cd);
+      }
+      else
+      {
+        // left of centerline
+        get_data( cell(0), left_values, 'r', 0.5-0.5*dim, j*dim, 0.5*dim );
+        get_data( cell(1), left_values, 'r', 0.5-0.5*dim, (j+0.5)*dim, 0.5*dim );
+        // right of centerline
+        get_data( cell(2), right_values, 'l', 0.5, j*dim, 0.5*dim );
+        get_data( cell(3), right_values, 'l', 0.5, (j+0.5)*dim, 0.5*dim );
+      }
+    }
+  }
+  // even number of cells along the x-direction.
+  else
+  {
+    int right_i = m_config.cell_count[0] >> 1;
+    int left_i = right_i - 1;
+    // left of centerline
+    for( int j = 0; j < m_config.cell_count[1]; ++j )
+    {
+      int ii = j * m_config.cell_count[0] + left_i;
+      double xstart = left_i*dim;
+      double ystart = j*dim;
+      get_data( m_grid[0][ii], left_values, 'r', xstart, ystart, dim );
+    }
+    // left of centerline
+    for( int j = 0; j < m_config.cell_count[1]; ++j )
+    {
+      int ii = j * m_config.cell_count[0] + right_i;
+      double xstart = right_i*dim;
+      double ystart = j*dim;
+      get_data( m_grid[0][ii], right_values, 'l', xstart, ystart, dim );
+    }
+  }
+  CellData top_wall;
+  top_wall.u = m_config.U;
+  top_wall.v = 0;
+  top_wall.x = 0.5;
+  top_wall.y = 1.0;
+  left_values.push_back(top_wall);
+  right_values.push_back(top_wall);
+}
+
+
 void Simulator::output_centerlines()
 {
     std::vector<CellData> top;
@@ -158,82 +317,6 @@ void Simulator::centerline_y(
   top_values.push_back(right_wall);
   bottom_values.push_back(right_wall);
 }
-
-// Usable on our tree dynamic grid.
-// Assumes lid-driven cavity, with top surface as moving lid.
-// Assumes square domain with square cells.
-void Simulator::centerline_x(
-  std::vector<CellData>& left_values, std::vector<CellData>& right_values)
-{
-  CellData bottom_wall;
-  bottom_wall.u = 0;
-  bottom_wall.v = 0;
-  bottom_wall.x = 0.5;
-  bottom_wall.y = 0;
-  left_values.push_back(bottom_wall);
-  right_values.push_back(bottom_wall);
-  double dim = 1.0 / m_config.cell_count[1];
-  // odd number of cells along the x-direction.
-  if (m_config.cell_count[0] & 1)
-  {
-    int start_i = m_config.cell_count[0] >> 1;
-    for(int j = 0; j < m_config.cell_count[1]; ++j)
-    {
-      int ii = j*m_config.cell_count[0] + start_i;
-      Cell& cell = m_grid[0][ii];
-      if ( cell.active() )
-      {
-        // right on centerline
-        CellData cd;
-        cd.u = cell.u();
-        cd.v = cell.v();
-        cd.x = 0.5;
-        cd.y = (j+0.5)*dim;
-        left_values.push_back(cd);
-        right_values.push_back(cd);
-      }
-      else
-      {
-        // left of centerline
-        get_data( cell(0), left_values, 'r', 0.5-0.5*dim, j*dim, 0.5*dim );
-        get_data( cell(1), left_values, 'r', 0.5-0.5*dim, (j+0.5)*dim, 0.5*dim );
-        // right of centerline
-        get_data( cell(2), right_values, 'l', 0.5, j*dim, 0.5*dim );
-        get_data( cell(3), right_values, 'l', 0.5, (j+0.5)*dim, 0.5*dim );
-      }
-    }
-  }
-  // even number of cells along the x-direction.
-  else
-  {
-    int right_i = m_config.cell_count[0] >> 1;
-    int left_i = right_i - 1;
-    // left of centerline
-    for( int j = 0; j < m_config.cell_count[1]; ++j )
-    {
-      int ii = j * m_config.cell_count[0] + left_i;
-      double xstart = left_i*dim;
-      double ystart = j*dim;
-      get_data( m_grid[0][ii], left_values, 'r', xstart, ystart, dim );
-    }
-    // left of centerline
-    for( int j = 0; j < m_config.cell_count[1]; ++j )
-    {
-      int ii = j * m_config.cell_count[0] + right_i;
-      double xstart = right_i*dim;
-      double ystart = j*dim;
-      get_data( m_grid[0][ii], right_values, 'l', xstart, ystart, dim );
-    }
-  }
-  CellData top_wall;
-  top_wall.u = m_config.U;
-  top_wall.v = 0;
-  top_wall.x = 0.5;
-  top_wall.y = 1.0;
-  left_values.push_back(top_wall);
-  right_values.push_back(top_wall);
-}
-
 // From side1 and side2 vector data, produces centerline data
 // we assume 0.5 is the centerline for x or y
 void Simulator::produce_centerline_y(std::vector<CellData>& side1,

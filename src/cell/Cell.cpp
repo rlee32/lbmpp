@@ -1023,6 +1023,57 @@ void Cell::moving_wall(char side, double U)
 // }
 
 
+const Cell& Cell::getChild(double x, double y) const
+{
+    const bool north = y > 0.5;
+    const bool east  = x < 0.5;
+    const auto child = (north)
+        ? ((east) ? Child::NE : Child::NW)
+        : ((east) ? Child::SE : Child::SW);
+    const int childIndex = static_cast<int>(child);
+    return operator()(childIndex);
+}
+
+double Cell::ChildCoordinate(double parentCoordinate)
+{
+    double childCoordinate = parentCoordinate;
+    if (parentCoordinate > 0.5 or MathUtils::Equals(parentCoordinate, 0.5))
+    {
+        childCoordinate -= 0.5;
+    }
+    return 2.0 * std::max(0.0, childCoordinate);
+}
+
+double Cell::getU(double x, double y) const
+{
+    if (isLeaf())
+    {
+        return state.u;
+    }
+    const bool middlex = MathUtils::Equals(x, 0.5);
+    const bool middley = MathUtils::Equals(y, 0.5);
+    // Check if (x,y) lies on child-cell boundaries.
+    if (middlex and middley)
+    {
+        return state.u;
+    }
+    else if (middlex)
+    {
+        int west = static_cast<int>((y > 0.5) ? Child::NW : Child::SW);
+        int east = static_cast<int>((y > 0.5) ? Child::NE : Child::SE);
+        return 0.5 * (operator()(west).state.u + operator()(east).state.u);
+    }
+    else if (middley)
+    {
+        int north = static_cast<int>((x > 0.5) ? Child::NE : Child::NW);
+        int south = static_cast<int>((x > 0.5) ? Child::SE : Child::SW);
+        return 0.5 * (operator()(north).state.u + operator()(south).state.u);
+    }
+    else
+    {
+        return getChild(x,y).getU(ChildCoordinate(x), ChildCoordinate(y));
+    }
+}
 
 
 
