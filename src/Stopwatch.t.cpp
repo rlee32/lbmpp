@@ -4,6 +4,8 @@
 
 TEST(Stopwatch, ctor)
 {
-    Stopwatch s;
+    Stopwatch stopwatch;
+    stopwatch.start();
+    double secondsElapsed = stopwatch.stopSeconds();
 }
 

@@ -18,6 +18,7 @@ Config::Config(const std::string& filename)
     cell_count[0] = 0;
     cell_count[1] = 0;
     readSettings(filename);
+    // Compute output file name suffix.
     std::string grid_string = "G" + std::to_string((long long)cell_count[0]);
     if(cell_count[0] != cell_count[1])
     {

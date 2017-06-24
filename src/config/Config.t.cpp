@@ -9,7 +9,6 @@ TEST(Config, ctor)
     ASSERT_EQ(config.timesteps, 50000);
     ASSERT_EQ(config.cell_count[0], 125);
     ASSERT_EQ(config.cell_count[1], 250);
-    ASSERT_EQ(config.cell_count[1], 250);
     ASSERT_EQ(config.Re, 1000);
     ASSERT_DOUBLE_EQ(config.M, 0.2);
     ASSERT_EQ(config.L, 129);

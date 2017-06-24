@@ -31,7 +31,7 @@ ifeq ($(TEST),1)
 GTEST_DIR = ../googletest/googletest/
 # Don't need to touch the following.
 HEADER_PATHS += -I$(GTEST_DIR)/include/
-GTEST_FLAGS = -isystem $(GTEST_DIR)/include -g -Wall -Wextra -pthread
+GTEST_FLAGS = -std=c++14 -isystem $(GTEST_DIR)/include -g -Wall -Wextra -pthread
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h $(GTEST_DIR)/include/gtest/internal/*.h
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 gtest-all.o : $(GTEST_SRCS_)

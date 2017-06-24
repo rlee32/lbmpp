@@ -26,7 +26,7 @@ vc_model 0
 nucf 0.0 # multiple of viscosity to serve as a buffer viscosity.
 
 # Maximum number of timesteps to run.
-timesteps 50000
+timesteps 10000
 
 # Solution-adaptive refinement
 # 0 = false

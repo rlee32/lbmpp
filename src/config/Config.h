@@ -1,6 +1,6 @@
 #pragma once
 
-// Reads and has accessors for simulation settings.
+// Reads and contains simulation settings.
 
 #include <algorithm>
 #include <array>
@@ -61,5 +61,6 @@ private:
     void interpolate_field(int source_x_cells, std::vector<double>& source,
         int target_x_cells, int target_y_cells,
         std::vector<double>& target);
+    std::string computeOutputSuffix();
 };
 

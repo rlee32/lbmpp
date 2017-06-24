@@ -2,13 +2,6 @@
 
 // A C++ stopwatch
 // Call start() to start counting, then stop*() to get the elapsed time.
-//
-// TODO: put this is unit tests.
-// Usage example:
-//
-// Stopwatch stopwatch;
-// stopwatch.start();
-// double secondsElapsed = stopwatch.stopSeconds();
 
 #include <chrono>
 

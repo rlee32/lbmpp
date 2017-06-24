@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <string>
 #include <iostream>
 
@@ -12,18 +13,19 @@ using namespace cimg_library;
 class SolutionViewer
 {
 public:
-  SolutionViewer(Simulator& sim, int max_pixel_dim);
+  SolutionViewer(const Config& config, const Simulator& sim, int max_pixel_dim);
   void test_draw();
   void display();
   void draw_velocity_magnitude(Grid& grid);
-  void draw_status( 
-    int iteration, Simulator& sim, double elapsed_time );
-  void save_image(std::string filename) { image.save( filename.c_str() ); }
+  void draw_status(int iteration, double elapsed_time);
+  void save_image(std::string filename) { image.save(filename.c_str()); }
   CImgDisplay window;
 private:
-  static const uint TextHeight = 10;
-  static const uint TextPadding = 3;
-  static const uint TextDisplayDim = 8*( TextHeight + TextPadding ) 
+  const Simulator& m_sim;
+  const Config& m_config;
+  static constexpr uint TextHeight = 10;
+  static constexpr uint TextPadding = 3;
+  static constexpr uint TextDisplayDim = 8 * (TextHeight + TextPadding)
     + TextPadding;
   std::size_t pixels[2]; // The pixel dimension of the windows.
   std::size_t pixels_per_cell; // The number of pixels per coarsest cell.
@@ -38,6 +40,6 @@ private:
     double min;
     double max;
   } temp;
-  void draw_mag_tree( GridLevel* cg, 
+  void draw_mag_tree( GridLevel* cg,
     Cell& cell, std::size_t i, std::size_t j, std::size_t p );
 };

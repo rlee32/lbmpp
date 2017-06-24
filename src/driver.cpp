@@ -12,21 +12,24 @@
 
 int main(int /*argc*/, char** /*argv*/)
 {
-    Simulator sim("settings");
+    const std::string configFilename("settings");
+    const Config config(configFilename);
+    Grid grid(config);
+    Simulator sim(configFilename, grid);
     Stopwatch stopwatch;
-    std::cout << "Running " << sim.get_timesteps() << " timesteps." << std::endl;
+    std::cout << "Running " << config.timesteps << " timesteps." << std::endl;
     int timestep = 0;
     stopwatch.start();
-    while (timestep <= sim.get_timesteps())
+    while (timestep <= config.timesteps)
     {
         sim.iteration();
-        if (timestep % sim.get_display_interval() == 0)
+        if (timestep % config.display_interval == 0)
         {
             const double speed = static_cast<double>(timestep) / stopwatch.stopSeconds();
             std::cout << "Average speed: " << speed << " iterations / second" << std::endl;
-            if (sim.do_picset())
+            if (config.picset)
             {
-                sim.output_picset_field(timestep / sim.get_display_interval());
+                sim.output_picset_field(timestep / config.display_interval);
             }
         }
         ++timestep;

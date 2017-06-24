@@ -2,18 +2,20 @@
 
 using namespace std;
 
-SolutionViewer::SolutionViewer(Simulator& sim, int max_pixel_dim) : 
-  last_elapsed_time(0), last_iteration(0)
+SolutionViewer::SolutionViewer(const Config& config, const Simulator& sim, int max_pixel_dim)
+    : m_sim(sim)
+    , m_config(config)
+    , last_elapsed_time(0)
+    , last_iteration(0)
 {
   temp.min = 0;
   temp.max = 0;
-  int max_cell_dim = (sim.get_cell_count_0() > sim.get_cell_count_1()) ? 
-    sim.get_cell_count_0() : sim.get_cell_count_1();
+  int max_cell_dim = std::max(m_config.cell_count[0], m_config.cell_count[1]);
   pixels_per_cell = (double) max_pixel_dim / (double) max_cell_dim;
   pixels_per_cell = ( pixels_per_cell < 1 ) ? 1 : pixels_per_cell;
   pixels_per_cell = (int) pixels_per_cell;
-  pixels[0] = pixels_per_cell*sim.get_cell_count_0();
-  pixels[1] = pixels_per_cell*sim.get_cell_count_1();
+  pixels[0] = pixels_per_cell * m_config.cell_count[0];
+  pixels[1] = pixels_per_cell * m_config.cell_count[1];
   CImg<unsigned char> image_(
     pixels[0], // x-resolution
     pixels[1]+TextDisplayDim, // y-resolution
@@ -106,8 +108,7 @@ void SolutionViewer::draw_mag_tree( GridLevel* cg,
   }
 }
 
-void SolutionViewer::draw_status( int iteration, Simulator& sim,  
-  double elapsed_time )
+void SolutionViewer::draw_status(int iteration, double elapsed_time)
 {
   const float white[] = { 255, 255, 255 };
   image.draw_rectangle(
@@ -121,7 +122,7 @@ void SolutionViewer::draw_status( int iteration, Simulator& sim,
   double speed = (dt > 0) ? di / dt : 0;
   double elapsed_time_seconds = fmod(elapsed_time,60);
   size_t elapsed_time_minutes = (size_t)( elapsed_time / 60 );
-  size_t remaining_iter = sim.get_timesteps() - iteration;
+  size_t remaining_iter = m_config.timesteps - iteration;
   double avg_speed = (double)iteration / elapsed_time;
   double remaining_seconds_total = remaining_iter / avg_speed;
   double remaining_seconds = fmod(remaining_seconds_total,60);
@@ -129,28 +130,28 @@ void SolutionViewer::draw_status( int iteration, Simulator& sim,
   string text = "";
   uint line = 0;
   text = "Iteration: " + to_string(iteration) + " / " 
-    + to_string((size_t) sim.get_timesteps());
+    + to_string((size_t) m_config.timesteps);
   draw_text_line( text, line++ );
   text = "Elapsed time: " + to_string(elapsed_time_minutes) + " min, " 
     + to_string(elapsed_time_seconds) + " sec"
     + " ( Estimated " + to_string(remaining_minutes) + " minutes, " 
     + to_string(remaining_seconds) + " sec remaining )";
   draw_text_line( text, line++ );
-  text = "Total cells: " + to_string(sim.grid.active_cells());
+  text = "Total cells: " + std::to_string(m_sim.m_grid.active_cells());
   draw_text_line( text, line++ );
   text = "Computation speed: " + to_string(speed) + " timesteps / second"
     + " ( average speed: " + to_string(avg_speed) + " timesteps / second )";
   draw_text_line( text, line++ );
-  text = "Reynolds number: " + to_string(sim.get_Re());
+  text = "Reynolds number: " + std::to_string(m_config.Re);
   draw_text_line( text, line++ );
-  text = "Relaxation time: " + to_string(sim.get_tau());
+  text = "Relaxation time: " + std::to_string(m_config.tau);
   draw_text_line( text, line++ );
-  text = "Min, max density: " + to_string(sim.grid.min_rho()) + ", "
-    + to_string(sim.grid.max_rho());
+  text = "Min, max density: " + std::to_string(m_sim.m_grid.min_rho()) + ", "
+    + to_string(m_sim.m_grid.max_rho());
   draw_text_line( text, line++ );
-  text = "Min, max velocity magnitude (BC: " + to_string( sim.get_U() ) 
-    + "): " + to_string( temp.min ) + ", "
-    + to_string( temp.max );
+  text = "Min, max velocity magnitude (BC: " + std::to_string(m_config.U)
+    + "): " + std::to_string(temp.min) + ", "
+    + std::to_string(temp.max);
   draw_text_line( text, line++ );
   last_elapsed_time = elapsed_time;
   last_iteration = iteration;
