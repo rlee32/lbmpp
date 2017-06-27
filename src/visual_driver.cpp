@@ -4,10 +4,11 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "viz/CImg.h"
-#include "viz/SolutionViewer.h"
+#include "Log.h"
 #include "sim/Simulator.h"
 #include "Stopwatch.h"
+#include "viz/CImg.h"
+#include "viz/SolutionViewer.h"
 
 using namespace cimg_library;
 
@@ -37,11 +38,11 @@ int main(int argc, char ** argv)
         }
         ++timestep;
     }
-    std::cout << "Completed " << timestep << " timesteps." << std::endl;
+    Log("Completed ", timestep, " timesteps.");
     const bool complete = timestep > config.timesteps;
     if (complete)
     {
-        std::cout << "Simulation finished! Press enter to continue." << std::endl;
+        Log("Simulation finished! Press enter to continue.");
         sim.output_solution();
         sv.save_image(sim.outputFolder + "mag_" + config.output_suffix + ".png" );
         std::cin.ignore(); // Let the final view linger.

@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <iostream>
 
+#include "Log.h"
 #include "sim/Simulator.h"
 #include "Stopwatch.h"
 
@@ -17,7 +18,7 @@ int main(int /*argc*/, char** /*argv*/)
     Grid grid(config);
     Simulator sim(config, grid);
     Stopwatch stopwatch;
-    std::cout << "Running " << config.timesteps << " timesteps." << std::endl;
+    Log("Running ", config.timesteps, " timesteps.");
     int timestep = 0;
     stopwatch.start();
     while (timestep <= config.timesteps)
@@ -26,7 +27,7 @@ int main(int /*argc*/, char** /*argv*/)
         if (timestep % config.display_interval == 0)
         {
             const double speed = static_cast<double>(timestep) / stopwatch.stopSeconds();
-            std::cout << "Average speed: " << speed << " iterations / second" << std::endl;
+            Log("Average speed: ", speed, " iterations / second");
             if (config.picset)
             {
                 sim.output_picset_field(timestep / config.display_interval);
@@ -34,7 +35,7 @@ int main(int /*argc*/, char** /*argv*/)
         }
         ++timestep;
     }
-    std::cout << "Simulation finished!" << std::endl;
+    Log("Simulation finished!");
     sim.output_solution();
     return EXIT_SUCCESS;
 }
