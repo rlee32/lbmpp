@@ -293,6 +293,7 @@ void Cell::link_children( vector<Cell>& pg, vector<Cell>& cg )
     }
   }
 }
+
 // Only active interface cells will coalesce.
 void Cell::coalesce()
 {
@@ -340,91 +341,88 @@ void Cell::coalesce()
 // cout << endl;
   }
 }
+
 // Only active interface cells will explode.
 void Cell::explode()
 {
-  if ( state.active and state.interface and has_children() )
-  {
-    for(int i = 0; i < 4; ++i)
+    if (state.active and state.interface and has_children())
     {
-// cout << "Exploded f to " << local.children[i] << ": ";
-      Cell& c = (*this)(i);
-      c.state.rho = state.rho;
-      c.state.u = state.u;
-      c.state.v = state.v;
-      c.state.fc = state.fc;
-      for(int j = 0; j < 8; ++j) c.state.f[j] = state.f[j];
-      for(int j = 0; j < 8; ++j) c.state.b[j] = state.f[j];
-// for (int i = 0; i < 8; ++i) cout << c.state.f[i] << " ";
-// cout << endl;  
-
+        for(int i = 0; i < 4; ++i)
+        {
+            // cout << "Exploded f to " << local.children[i] << ": ";
+            Cell& c = (*this)(i);
+            c.state.rho = state.rho;
+            c.state.u = state.u;
+            c.state.v = state.v;
+            c.state.fc = state.fc;
+            for(int j = 0; j < 8; ++j) c.state.f[j] = state.f[j];
+            for(int j = 0; j < 8; ++j) c.state.b[j] = state.f[j];
+            // for (int i = 0; i < 8; ++i) cout << c.state.f[i] << " ";
+            // cout << endl;
+        }
     }
-  }
 }
 
 void Cell::activate_children( vector<Cell>& cg )
 {
-  for ( size_t i = 0; i < 4; ++i )
-  {
-    // homogeneous explosion.
-    cg[ local.children[i] ].state = state;
-    cg[ local.children[i] ].state.active = true;
-    cg[ local.children[i] ].state.interface = false;
-  }
+    for ( size_t i = 0; i < 4; ++i )
+    {
+        // homogeneous explosion.
+        cg[ local.children[i] ].state = state;
+        cg[ local.children[i] ].state.active = true;
+        cg[ local.children[i] ].state.interface = false;
+    }
 }
 
 // Creates activated children.
-void Cell::create_children( vector<Cell>& next_level_cells, 
-  vector<Cell>& grandchild_cells )
+void Cell::create_children(vector<Cell>& next_level_cells, vector<Cell>& grandchild_cells)
 {
-  // create the children.
-  for ( size_t i = 0; i < 4; ++i )
-  {
-    Cell child( this, &grandchild_cells );
-    child.local.me = next_level_cells.size();
-    local.children[i] = next_level_cells.size();
-    next_level_cells.push_back(child);
-  }
+    // create the children.
+    for ( size_t i = 0; i < 4; ++i )
+    {
+        Cell child( this, &grandchild_cells );
+        child.local.me = next_level_cells.size();
+        local.children[i] = next_level_cells.size();
+        next_level_cells.push_back(child);
+    }
 }
 
 // If children do not already exist, create them.
 // Then, activate children and deactivate current (parent) cell.
-void Cell::refine( vector<Cell>& next_level_cells, 
-    vector<Cell>& grandchild_cells )
+void Cell::refine(vector<Cell>& next_level_cells, vector<Cell>& grandchild_cells)
 {
-  if( not has_children() )
-  {
-    create_children( next_level_cells, grandchild_cells );
-  }
-  else
-  {
-    activate_children( next_level_cells );
-  }
-  // cycle through neighbours to make sure children have neighbours
-  // and to notify interfaces of directions to coalesce.
-  for(size_t i = 0; i < 8; ++i)
-  {
-  //   cout << i << endl;
-  //   cout << "\t has neighbour" << has_neighbour(i) << endl;
-  //   if (has_neighbour(i)){ 
-  //   cout << "\trefine: " << (*this)[i].action.refine << endl;
-  //   cout << "\thas children: " << (*this)[i].has_children() << endl;
-  // }
-  //   cin.ignore();
-    if ( has_neighbour(i) )
+    if(not has_children())
     {
-      // if not slated to refine and does not have children,
-      // needs to be made interface.
-      if ( not (*this)[i].action.refine and not (*this)[i].has_children() )
-      {
-        // Need to split to make interface!
-        (*this)[i].create_interface_children(
-          next_level_cells, grandchild_cells);
-      }
-      if ( (*this)[i].state.interface ) (*this)[i].bc.coalesce[i] = true;
+        create_children(next_level_cells, grandchild_cells);
     }
-  }
-  state.active = false;
+    else
+    {
+        activate_children(next_level_cells);
+    }
+    // cycle through neighbours to make sure children have neighbours
+    // and to notify interfaces of directions to coalesce.
+    for(size_t i = 0; i < 8; ++i)
+    {
+        //   cout << i << endl;
+        //   cout << "\t has neighbour" << has_neighbour(i) << endl;
+        //   if (has_neighbour(i)){ 
+        //   cout << "\trefine: " << (*this)[i].action.refine << endl;
+        //   cout << "\thas children: " << (*this)[i].has_children() << endl;
+        // }
+        //   cin.ignore();
+        if (has_neighbour(i))
+        {
+            // if not slated to refine and does not have children,
+            // needs to be made interface.
+            if (not (*this)[i].action.refine and not (*this)[i].has_children())
+            {
+                // Need to split to make interface!
+                (*this)[i].create_interface_children(next_level_cells, grandchild_cells);
+            }
+            if ((*this)[i].state.interface)(*this)[i].bc.coalesce[i] = true;
+        }
+    }
+    state.active = false;
 }
 
 void Cell::collide( size_t relax_model, size_t vc_model, double omega, 
@@ -1026,7 +1024,7 @@ void Cell::moving_wall(char side, double U)
 const Cell& Cell::getChild(double x, double y) const
 {
     const bool north = y > 0.5;
-    const bool east  = x < 0.5;
+    const bool east  = x > 0.5;
     const auto child = (north)
         ? ((east) ? Child::NE : Child::NW)
         : ((east) ? Child::SE : Child::SW);
@@ -1046,34 +1044,14 @@ double Cell::ChildCoordinate(double parentCoordinate)
 
 double Cell::getU(double x, double y) const
 {
-    if (isLeaf())
+    // TODO: implement bilinear interpolation.
+    if (state.active)
     {
         return state.u;
-    }
-    const bool middlex = MathUtils::Equals(x, 0.5);
-    const bool middley = MathUtils::Equals(y, 0.5);
-    // Check if (x,y) lies on child-cell boundaries.
-    if (middlex and middley)
-    {
-        return state.u;
-    }
-    else if (middlex)
-    {
-        int west = static_cast<int>((y > 0.5) ? Child::NW : Child::SW);
-        int east = static_cast<int>((y > 0.5) ? Child::NE : Child::SE);
-        return 0.5 * (operator()(west).state.u + operator()(east).state.u);
-    }
-    else if (middley)
-    {
-        int north = static_cast<int>((x > 0.5) ? Child::NE : Child::NW);
-        int south = static_cast<int>((x > 0.5) ? Child::SE : Child::SW);
-        return 0.5 * (operator()(north).state.u + operator()(south).state.u);
     }
     else
     {
         return getChild(x,y).getU(ChildCoordinate(x), ChildCoordinate(y));
     }
 }
-
-
 

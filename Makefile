@@ -57,6 +57,7 @@ ifeq ($(TEST),1)
 GTEST_SRCS += src/main.t.cpp
 GTEST_SRCS += src/Stopwatch.t.cpp
 GTEST_SRCS += src/config/Config.t.cpp
+GTEST_SRCS += src/cell/Cell.t.cpp
 endif
 
 %.o: %.cpp

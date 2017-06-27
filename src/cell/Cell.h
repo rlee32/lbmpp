@@ -1,12 +1,26 @@
 #pragma once
 
 // A D2Q9 Lattice Boltzmann cell.
+// TODO: investigate the feasibility of templatizing Cell on the grid level.
+//
+// Child cells are Morton-ordered:
+// *-----*-----*
+// |     |     |
+// |  3  |  1  |
+// |     |     |
+// *-----*-----*
+// |     |     |
+// |  2  |  0  |
+// |     |     |
+// *-----*-----*
+
 
 #include <cstdint>
 #include <cmath>
 #include <vector>
 #include <iostream>
 
+#include "../Log.h"
 #include "../MathUtils.h"
 
 #define OPPOSITE(index) (((index)<4)?((index)+4):((index)-4))
@@ -37,11 +51,10 @@ class Cell
 public:
   // Constructors
   // Cell( double u_, double v_, double rho_ );// Meant for coarsest cells.
-  Cell( double u_, double v_, double rho_,
-    std::vector<Cell>* g, std::vector<Cell>* cg );// Meant for coarsest cells.
+  Cell(double u, double v, double rho,
+    std::vector<Cell>* g, std::vector<Cell>* cg);// Meant for coarsest cells.
   // Cell( Cell* parent ); // meant for (single-level) refine operation.
-  Cell( Cell* parent,
-    std::vector<Cell>* cg ); // meant for (single-level) refine operation.
+  Cell(Cell* parent, std::vector<Cell>* cg); // meant for (single-level) refine operation.
 
   // state
   double u() const { return state.u; }
@@ -72,7 +85,7 @@ public:
   // A cell can only have 0 or 4 children.
   // If 0 children, then all child indices are invalid.
   bool isLeaf() const { return local.children[0] < 0; }
-  bool has_interface_children( std::vector<Cell>& next_level_cells ) const 
+  bool has_interface_children( std::vector<Cell>& next_level_cells ) const
     { return next_level_cells[ local.children[0] ].state.interface; }
   Cell& parent() { return (*(local.pg))[local.parent]; }
 
@@ -91,7 +104,6 @@ public:
   double rho() const { return state.rho; }
     // x and y are normalized to this cell, thus they are in [0, 1].
     double getU(double x, double y) const;
-
 
   void link_children( std::vector<Cell>& pg, std::vector<Cell>& cg );
   // std::size_t max_active_level(std::vector<Cell>& next_level_cells)
@@ -114,7 +126,8 @@ public:
     // buffers for advected distributions (for parallel advection).
     // also useful for holding bounced-back distributions!
     double b[8];
-    //
+    // If true, denotes this cell is a direct part of the solution.
+    // For all levels of cells in a quadtree, only one level can be active.
     bool active;
     // An interface cell will not collide, only advect.
     // A cell can be both an interface and active if it is on the coarser
@@ -222,16 +235,14 @@ private:
     // post
     // x and y are normalized to this cell, thus they are in [0, 1].
     const Cell& getChild(double x, double y) const;
-
     enum class Child : int
     {
         NONE = -1,
-        SW = 0,
-        NW = 1,
-        SE = 2,
-        NE = 3
+        SE = 0,
+        NE = 1,
+        SW = 2,
+        NW = 3,
     };
-
     static double ChildCoordinate(double parentCoordinate);
 
 };
