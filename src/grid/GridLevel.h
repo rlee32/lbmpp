@@ -10,6 +10,7 @@
 #include <omp.h>
 
 #include "../cell/Cell.h"
+#include "../Log.h"
 #include "BoundaryConditions.h"
 
 class GridLevel
@@ -60,10 +61,10 @@ public:
   void refine_half( std::size_t i_cells, std::size_t j_cells );
   void refine_three_parts( std::size_t i_cells, std::size_t j_cells );
   void refine_three_parts_rotated( size_t i_cells, size_t j_cells );
-  void refine_three_parts_rotated_flipped( 
+  void refine_three_parts_rotated_flipped(
     size_t i_cells, size_t j_cells );
-  void print_cell_status( std::size_t i_cells, std::size_t j_cells );
-  
+  void print_cell_status(int i_cells, int j_cells);
+
   // Mainly for post-processing purposes.
   std::size_t get_active_cells() const { return active_cells; }
   double max_mag() const;

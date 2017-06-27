@@ -2,7 +2,7 @@
 
 Config::Config(const std::string& filename)
 {
-    std::cout << "Reading config file: " << filename << std::endl;
+    Log("Reading config file: ", filename);
     bc[0] = 'w';
     bc[1] = 'w';
     bc[2] = 'w';
@@ -152,23 +152,22 @@ void Config::readSettings(const std::string& filename)
         {
             if (not u0file.empty() and not v0file.empty())
             {
-                std::cout << "Reading initial field from files: "
-                    "\n\tu-velocity: " << u0file
-                    << "\n\tv-velocity: " << v0file
-                    << std::endl;
+                Log("Reading initial field from files: "
+                    , "\n\tu-velocity: ", u0file
+                    , "\n\tv-velocity: ", v0file);
                 read_coarse_solution();
             }
             else
             {
-                std::cout << "Attempted to read initial field from files"
-                    ", but one or more filenames were missing." << std::endl;
+                Log("Attempted to read initial field from files"
+                    ", but one or more filenames were missing.");
             }
         }
-        std::cout << "Successfully read config file." << std::endl;
+        Log("Successfully read config file.");
     }
     else
     {
-        std::cerr << "Unable to open config file: " << filename << std::endl;
+        Log("Unable to open config file: ", filename);
     }
 }
 
@@ -203,18 +202,16 @@ int Config::read_coarse_field(std::string filename, std::vector<double>& phi,
         myfile.close();
         if (phi.size() % x_cells != 0)
         {
-          std::cout << "Error! Read " << phi.size() << " total cells, but x cells = "
-            << x_cells << std::endl;
+            Log("Error! Read ", phi.size(), " total cells, but x cells = ", x_cells);
         }
         else
         {
-          std::cout << "Read in " << filename
-            << " (" << x_cells << "x" << phi.size()/x_cells << ")" << std::endl;
+            Log("Read in ", filename, " (", x_cells, "x", phi.size() / x_cells, ")");
         }
       }
       else
       {
-        std::cerr << "Unable to open file: " << filename << std::endl;
+          Log("Unable to open file: ", filename);
       }
       return x_cells;
 }
@@ -295,9 +292,9 @@ void Config::read_coarse_solution()
     int y_cells = total_cells / x_cells;
     if ( y_cells*x_cells != total_cells )
     {
-    std::cout << "Error! Cell dimensions not consistent with total cells: "
-      << x_cells << "x" << y_cells << " != " << total_cells << std::endl;
-    return;
+        Log("Error! Cell dimensions not consistent with total cells: "
+            , x_cells, "x", y_cells, " != ", total_cells);
+        return;
     }
     interpolate_field(x_cells, u_source,
     cell_count[0], cell_count[1], u0field);

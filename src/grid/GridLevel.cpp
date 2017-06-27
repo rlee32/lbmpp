@@ -169,7 +169,7 @@ void GridLevel::create_coarse_grid( size_t cell_count_x, size_t cell_count_y,
   cells[ (cell_count_y-1)*cell_count_x ].bc.corner = 1;
   cells[ cell_count_y*cell_count_x-1 ].bc.corner = 3;
 
-  
+
   // East neighbours
   for (size_t i = 0; i < cell_count_x-1; ++i)
   {
@@ -490,21 +490,19 @@ void GridLevel::refine_three_parts_rotated_flipped( size_t i_cells, size_t j_cel
   next_level.get_next_grid_level()->refresh_active_cells();
   next_level.reset_refine();
 }
-void GridLevel::print_cell_status( std::size_t i_cells, std::size_t j_cells )
+
+void GridLevel::print_cell_status(int i_cells, int j_cells)
 {
-  // assuming row-major coarse grid
-  for(int j = j_cells-1; j >= 0; --j)
-  {
-    for(size_t i = 0; i < i_cells; ++i)
+    // assuming row-major coarse grid
+    for(int j = j_cells-1; j >= 0; --j)
     {
-      size_t ii = j*i_cells + i;
-      cout << cells[ii].state.active <<  " ";
+        for(int i = 0; i < i_cells; ++i)
+        {
+            int ii = j*i_cells + i;
+            Log(cells[ii].state.active);
+        }
     }
-    cout << endl;
-  }
 }
-
-
 
 // Call AFTER refinement (via action.refine), and BEFORE linking children.
 // Goes through all cells and identifies newly-created cells that 

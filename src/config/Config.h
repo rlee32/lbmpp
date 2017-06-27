@@ -11,6 +11,8 @@
 #include <vector>
 #include <limits>
 
+#include "../Log.h"
+
 struct Config
 {
     Config(const std::string& filename);

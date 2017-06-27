@@ -9,10 +9,9 @@
 #include <string>
 #include <vector>
 
-
 #include "../grid/Grid.h"
+#include "../Log.h"
 #include "CellData.h"
-
 
 class Centerlines
 {

@@ -4,11 +4,11 @@ Centerlines::Centerlines(const Grid&, const Data& y, const Data& x)
 {
     for(const auto p : y)
     {
-        std::cout << p << std::endl;
+        Log(p);
     }
     for(const auto p : x)
     {
-        std::cout << p << std::endl;
+        Log(p);
     }
 }
 
